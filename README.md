@@ -48,7 +48,7 @@ For the initial release of PRism, I plan to support the following features:
 
 # Architecture
 
-![PRism Flowchart](docs/assets/PRism_Flowchart.png)
+![PRism Flowchart](assets/PRism_Flowchart.png)
 
 ---
 
