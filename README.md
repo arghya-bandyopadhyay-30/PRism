@@ -46,6 +46,12 @@ For the initial release of PRism, I plan to support the following features:
 
 ---
 
+# Architecture
+
+![PRism Flowchart](docs/assets/PRism_Flowchart.png)
+
+---
+
 # Key Features
 
 * **Rule-driven engine**: Enforces a configurable list of backend best practices.
