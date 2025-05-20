@@ -1,8 +1,8 @@
 import re
 from typing import Optional, Dict
 
-from utils.constants import GITHUB_PR_URL_PATTERN, OWNER, REPO, PR_NUMBER
-from utils.logger import get_logger
+from src.utils.constants import GITHUB_PR_URL_PATTERN, OWNER, REPO, PR_NUMBER
+from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

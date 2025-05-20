@@ -1,5 +1,6 @@
-from api.github_api import GitHubAPIClient
-from core.diff_parser import DiffParser
+from src.api.github_api import GitHubAPIClient
+from src.core.diff_parser import DiffParser
+
 
 def main():
     pr_url = "https://github.com/qxresearch/qxresearch-event-1/pull/80/files"

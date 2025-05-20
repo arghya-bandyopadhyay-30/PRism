@@ -1,11 +1,11 @@
 import re
 from typing import List, Dict, Any
-from utils.constants import (
+from src.utils.constants import (
     PYTHON_FILE_EXTENSION, PATCH_KEY, FILE_PATH, FILENAME_KEY, LINE_NUMBER,
     LINE_NUMBER_REGEX, HUNK_HEADER_PREFIX, EMPTY_STRING, ADDED_LINE_PREFIX,
     ADDED_FILE_PREFIX, REMOVED_LINE_PREFIX, CONTENT
 )
-from utils.logger import get_logger
+from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

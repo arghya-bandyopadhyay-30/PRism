@@ -1,8 +1,8 @@
 import requests
 from typing import List, Dict
-from utils.constants import GITHUB_API, STATUS_CODE_200, TIMEOUT_DEFAULT
-from utils.logger import get_logger
-from utils.url_parser import parse_github_pr_url
+from src.utils.constants import GITHUB_API, STATUS_CODE_200, TIMEOUT_DEFAULT
+from src.utils.logger import get_logger
+from src.utils.url_parser import parse_github_pr_url
 
 logger = get_logger(__name__)
 
