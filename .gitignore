@@ -5,6 +5,9 @@ __pycache__/
 *.pyd
 *.pyc
 
+# Test coverage
+.coverage
+
 # Virtual environments
 .venv/
 env/
