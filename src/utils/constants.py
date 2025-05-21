@@ -23,3 +23,12 @@ OWNER = "owner"
 REPO = "repo"
 PR_NUMBER = "pr_number"
 
+# Models
+ID = "id"
+PATTERN = "pattern"
+MESSAGE = "message"
+SEVERITY = "severity"
+REGEX = "regex"
+INFO = "info"
+ADDITIONAL_PROPERTIES = "additional_properties"
+

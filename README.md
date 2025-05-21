@@ -78,6 +78,8 @@ PRism/
 │   │   └── rules_generator.py          # Generate rules.yaml using LLM
 │   │
 │   └── utils/
+│       ├── models.py  
+│       ├── rule_loader.py  
 │       ├── constants.py                # All constant keys and patterns
 │       ├── logger.py                   # Custom logger
 │       └── url_parser.py               # Parses PR URLs to extract metadata
@@ -98,6 +100,8 @@ PRism/
 │   │   └── test_rules_generator.py     # Tests for rules generated from best-practice docs
 │   │
 │   └── utils/
+│       ├── test_models.py  
+│       ├── test_rule_loader.py  
 │       └── test_url_parser.py          # Tests for GitHub PR URL parsing utility
 │
 ├── main.py                             # Entry point for CLI / GitHub Action runner
