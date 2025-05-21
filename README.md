@@ -52,7 +52,63 @@ For the initial release of PRism, I plan to support the following features:
 
 ---
 
-# Key Features
+# Project Structure
+
+```plaintext
+PRism/
+├── assets/
+│   └── PRism_Flowchart.png             # Architecture diagram
+│
+├── config/
+│   └── rules.yaml                      # Best practice rules (user-defined or LLM-generated)
+│
+├── src/
+│   ├── api/
+│   │   └── github_api.py               # Fetch PR diff from GitHub API
+│   │
+│   ├── core/
+│   │   ├── diff_parser.py              # Extracts added/modified lines from patch
+│   │   └── github_commenter.py         # Posts review comments on GitHub PRs
+│   │
+│   ├── rule_engine/
+│   │   ├── inline_rule_engine.py       # Applies rules to individual lines
+│   │   └── block_rule_engine.py        # Applies rules to logical code blocks
+│   │
+│   ├── llm/
+│   │   └── rules_generator.py          # Generate rules.yaml using LLM
+│   │
+│   └── utils/
+│       ├── constants.py                # All constant keys and patterns
+│       ├── logger.py                   # Custom logger
+│       └── url_parser.py               # Parses PR URLs to extract metadata
+│
+├── tests/                              # Unit tests organized by module
+│   ├── api/
+│   │   └── test_github_api.py          # Unit tests for GitHub API client
+│   │
+│   ├── core/
+│   │   ├── test_diff_parser.py         # Unit tests for patch line extraction
+│   │   └── test_github_commenter.py    # Unit tests for GitHub PR commenting
+│   │
+│   ├── rule_engine/
+│   │   ├── test_inline_rule_engine.py  # Tests for inline rule enforcement logic
+│   │   └── test_block_rule_engine.py   # Tests for block-level rule evaluation
+│   │
+│   ├── llm/
+│   │   └── test_rules_generator.py     # Tests for rules generated from best-practice docs
+│   │
+│   └── utils/
+│       └── test_url_parser.py          # Tests for GitHub PR URL parsing utility
+│
+├── main.py                             # Entry point for CLI / GitHub Action runner
+├── requirements.txt                    # Python dependencies
+└── README.md                           # Project documentation
+
+```
+
+---
+
+# 🔑 Key Features
 
 * **Rule-driven engine**: Enforces a configurable list of backend best practices.
 * **Diff-based scanning**: Focuses review only on the code that has changed.
