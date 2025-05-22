@@ -1,128 +1,171 @@
-# What is PRism?
+# PRism — PR Intelligent Semantic Moderator
 
-**PRism** is an automated review assistant bot designed to improve code quality and reduce the need for manual intervention during code reviews. It integrates with GitHub and is triggered **only during pull request events**. PRism scans code diffs and evaluates them against a set of predefined rules representing backend best practices. It then provides inline review comments directly in the pull request to guide developers in aligning with the standards.
+**PRism** is an intelligent GitHub review bot that automates backend best practice validation on pull requests. It goes beyond simple diff checks by comparing old vs. new file versions, semantically analyzing the intent of changes, and surfacing actionable feedback using rule-based and LLM-powered engines.
 
-Like a physical prism that reveals the full spectrum of light from a single beam, PRism reveals hidden insights within code changes—illuminating issues, encouraging consistency, and promoting best practices.
-
----
-
-# Motivation
-
-In modern software development, maintaining high code quality and adhering to engineering best practices is essential, especially in teams where code changes are frequent. Manual code reviews, while critical, are often time-consuming, inconsistent, and prone to oversight due to the subjective nature of human judgment.
-
-I have noticed that common issues and anti-patterns repeatedly creep into codebases despite having well-established best practices. Manual reviews slow down the development cycle and vary in quality depending on the reviewer. I believe there is a better way to ensure consistent quality without relying solely on human effort.
+Like a prism breaks down light to reveal its true spectrum, **PRism** dissects pull request changes to reveal hidden flaws, design violations, and coding inefficiencies.
 
 ---
 
-# The Problem
+## What's New in This Strategy?
 
-> *There is no systematic, automated way to enforce backend engineering best practices during pull requests, resulting in inconsistent quality, delayed feedback, and over-dependence on manual review.*
+Instead of analyzing *only changed lines*, PRism now compares the full context of file changes — including old content, new content, and a structured list of granular changes. This empowers three distinct engines:
 
----
-
-# The Vision
-
-I want to build an **automated review assistant bot** that:
-
-* **Integrates directly into the GitHub development workflow**, triggering on pull request events.
-* **Analyzes the code diffs** and checks them against a set of customizable best practice rules.
-* **Adds review comments directly in the pull request**, suggesting improvements or highlighting violations.
-* **Adapts to evolving practices** by allowing easy configuration of the ruleset.
-
-This bot will act as a first-pass reviewer, helping developers catch issues early and focus human review efforts on deeper architectural or design feedback.
+* **Inline Engine**: Fast, regex-based validations (e.g., `print()`, bad variable names).
+* **Block Engine**: Looks at logical code blocks (functions, classes) for structure/design issues.
+* **Semantic Engine**: Uses LLM to evaluate behavioral intent and higher-order best practices.
 
 ---
 
-# MVP Goals and Scope
+## Motivation
 
-For the initial release of PRism, I plan to support the following features:
+Manual code reviews are error-prone, inconsistent, and time-consuming. Most PR comments are repetitive and can be automated. PRism addresses this by offering:
 
-1. **Trigger only on `pull_request` events** (e.g., when a PR is opened or updated).
-2. **Analyze code diffs** to identify only new or modified lines of code.
-3. **Evaluate these diffs against a set of predefined rules** that capture backend best practices.
-4. **Post inline comments directly on pull requests** when rule violations are detected.
-5. **Support `Python` as the primary language** in the MVP phase.
-6. **Seamless GitHub integration** to fit naturally into existing workflows.
+* Consistent enforcement of best practices.
+* Instant, contextual feedback.
+* Support for evolving and custom rule sets.
 
 ---
 
-# Architecture
+## The Problem
 
-![PRism Flowchart](assets/PRism_Flowchart.png)
+> There is no automated way to contextually evaluate *why* and *how* code has changed in a PR, which leads to missed violations and subpar reviews.
 
 ---
 
-# Project Structure
+## The Vision
+
+An **intelligent PR review assistant** that:
+
+* **Parses full diff contexts** (old + new versions).
+* **Classifies change types** (added, updated, deleted).
+* **Executes three review layers**:
+
+  * Regex inline rules
+  * Structural block validations
+  * LLM-based semantic review
+* **Posts inline comments automatically** to GitHub.
+
+---
+
+## Workflow Overview
+
+![PRism Flowchart](assets/images/PRism_Flowchart.png)
+
+---
+
+## New Project Structure
 
 ```plaintext
 PRism/
 ├── assets/
-│   └── PRism_Flowchart.png             # Architecture diagram
+│   ├── docs/
+│   │   └── best_practice_guidelines.pdf  # Best practice guidelines
+│   └── images/
+│       └── PRism_Flowchart.png           # Updated architecture diagram
 │
 ├── config/
-│   └── rules.yaml                      # Best practice rules (user-defined or LLM-generated)
+│   └── rules.yaml                        # Hardcoded + custom best practice rules
 │
 ├── src/
 │   ├── api/
-│   │   └── github_api.py               # Fetch PR diff from GitHub API
+│   │   └── github_api.py                 # GitHub API abstraction
 │   │
 │   ├── core/
-│   │   ├── diff_parser.py              # Extracts added/modified lines from patch
-│   │   └── github_commenter.py         # Posts review comments on GitHub PRs
+│   │   ├── diff_parser.py                # Produces FileChange objects with full context
+│   │   └── github_commenter.py           # Posts inline comments to GitHub
 │   │
 │   ├── rule_engine/
-│   │   ├── inline_rule_engine.py       # Applies rules to individual lines
-│   │   └── block_rule_engine.py        # Applies rules to logical code blocks
+│   │   ├── inline_rule_engine.py         # Applies regex-based rules (e.g., bad patterns)
+│   │   ├── block_rule_engine.py          # Applies rules on functions/classes
+│   │   └── semantic_rule_engine.py       # LLM-based feedback engine
 │   │
 │   ├── llm/
-│   │   └── rules_generator.py          # Generate rules.yaml using LLM
+│   │   └── rules_generator.py            # Converts best practice PDFs to rules.yaml
 │   │
-│   └── utils/
-│       ├── models.py  
-│       ├── rule_loader.py  
-│       ├── constants.py                # All constant keys and patterns
-│       ├── logger.py                   # Custom logger
-│       └── url_parser.py               # Parses PR URLs to extract metadata
+│   ├── utils/
+│   │   ├── models.py                     # FileChange, ChangeType, etc.
+│   │   ├── rule_loader.py                # Loads inline/block rules from YAML
+│   │   ├── constants.py
+│   │   ├── logger.py
+│   │   └── url_parser.py
 │
-├── tests/                              # Unit tests organized by module
+├── tests/
 │   ├── api/
-│   │   └── test_github_api.py          # Unit tests for GitHub API client
+│   │   └── test_github_api.py
 │   │
 │   ├── core/
-│   │   ├── test_diff_parser.py         # Unit tests for patch line extraction
-│   │   └── test_github_commenter.py    # Unit tests for GitHub PR commenting
+│   │   ├── test_diff_parser.py
+│   │   └── test_github_commenter.py
 │   │
 │   ├── rule_engine/
-│   │   ├── test_inline_rule_engine.py  # Tests for inline rule enforcement logic
-│   │   └── test_block_rule_engine.py   # Tests for block-level rule evaluation
+│   │   ├── test_inline_rule_engine.py
+│   │   ├── test_block_rule_engine.py
+│   │   └── test_semantic_rule_engine.py
 │   │
 │   ├── llm/
-│   │   └── test_rules_generator.py     # Tests for rules generated from best-practice docs
+│   │   └── test_rules_generator.py
 │   │
 │   └── utils/
-│       ├── test_models.py  
-│       ├── test_rule_loader.py  
-│       └── test_url_parser.py          # Tests for GitHub PR URL parsing utility
+│       ├── test_models.py
+│       ├── test_rule_loader.py
+│       └── test_url_parser.py
 │
-├── main.py                             # Entry point for CLI / GitHub Action runner
-├── requirements.txt                    # Python dependencies
-└── README.md                           # Project documentation
-
+├── main.py                               # Entry point - used by CLI or GitHub Action
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-# 🔑 Key Features
+## Rule Engine Layers
 
-* **Rule-driven engine**: Enforces a configurable list of backend best practices.
-* **Diff-based scanning**: Focuses review only on the code that has changed.
-* **Inline commenting**: Posts contextual feedback as comments in the pull request.
-* **Extensibility**: New rules can be added or updated with minimal effort.
-* **Language-aware analysis**: Starts with backend languages (initially Python).
-* **CI/CD compatible**: Built to work naturally with GitHub Actions.
+| Engine                    | Scope             | Example Rule                                     |
+| ------------------------- | ----------------- | ------------------------------------------------ |
+| `inline_rule_engine.py`   | Line level        | No `print()`, poor var names, `eval()`, etc.     |
+| `block_rule_engine.py`    | Function/class    | Too many args, no return type, large method size |
+| `semantic_rule_engine.py` | LLM understanding | Is logic redundant? Is structure misleading?     |
 
 ---
 
-# Example Scenario
+## How It Works
 
-A developer raises a pull request to merge changes from a feature branch. PRism is triggered, scans the diffs, and identifies that a method uses `print()` for logging instead of the approved logging framework. It also flags a function that lacks input validation. The bot posts inline comments on these issues, recommending changes as per the defined standards. The developer receives instant, actionable feedback — even before a human reviewer begins their review.
+1. **Triggered on PR**.
+2. `main.py` calls `github_api` → fetches PR files.
+3. `diff_parser` generates `FileChange` objects with full context.
+4. `Rule Engine` routes changes to all three validation engines.
+5. Violations → piped to `github_commenter`.
+6. GitHub shows inline suggestions.
+
+---
+
+## FileChange Format (Core Data Unit)
+
+```json
+{
+  "file_path": "src/example.py",
+  "old_content": "...",       
+  "new_content": "...",       
+  "changes": [
+    {
+      "line_number": 12,
+      "content": "print('Hello')",
+      "label": "created",
+      "before_context": null
+    },
+    {
+      "line_number": 28,
+      "content": "if user.is_admin():",
+      "label": "updated",
+      "before_context": "if user.is_superuser():"
+    },
+    {
+      "line_number": 35,
+      "content": null,
+      "label": "deleted",
+      "before_context": "print('Temporary log line')"
+    }
+  ]
+}
+```
+
+---
